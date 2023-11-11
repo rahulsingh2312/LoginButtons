@@ -13,7 +13,7 @@ function App() {
 
       if(codeParam && (localStorage.getItem("accessToken")===null)){
         async function getaccessToken(){
-          await fetch("http://localhost:4000/getAccessToken?code="+codeParam , {
+          await fetch("https://login-button-server.onrender.com/getAccessToken?code="+codeParam , {
             method:"GET"
           }).then((response)=>{
             return  response.json();
@@ -31,7 +31,7 @@ function App() {
       },[setRerender] )
 
       async function getUserData(){
-        await fetch("http://localhost:4000/getUserData" , {
+        await fetch("https://login-button-server.onrender.com/getUserData" , {
           method:"GET",
           headers:{
             "Authorization" :"Bearer " + localStorage.getItem("accessToken")
