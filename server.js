@@ -1,19 +1,60 @@
-var express = require('express');
-var cors = require('cors');
-var bodyParser = require('body-parser');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const fetch = (...args)=>
     import('node-fetch').then(({default : fetch}) => fetch(...args));
-
-
-
 
 const CLIENT_ID = "c1c15041b40cebc5271e";
 const CLIENT_SECRET = "cf9f755f052284e2c5c6d65227932ca20ff7f3bd";
 
-
-var app = express();
+const app = express();
 app.use(cors());
-app.use(bodyParser.json())
-app.listen(4000 , function() { 
-    console.log("4000 hi ")
+app.use(bodyParser.json());
+
+app.get('/getUserData', async function (req, res) {
+    const authorizationHeader = req.get("Authorization");
+    
+    if (!authorizationHeader) {
+        return res.status(401).json({ error: 'Authorization header missing' });
+    }
+
+    try {
+        const response = await fetch("https://api.github.com/user", {
+            method: "GET",
+            headers: {
+                "Authorization": authorizationHeader
+            }
+        });
+
+        const data = await response.json();
+        console.log(data);
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/getAccessToken', async function (req, res) {
+    const code = req.query.code;
+    const params = `?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${code}`;
+
+    try {
+        const response = await fetch("https://github.com/login/oauth/access_token" + params, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.listen(4000, function () {
+    console.log("Server is running on port 4000");
 });
