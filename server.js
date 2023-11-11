@@ -3,10 +3,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const fetch = (...args)=>
     import('node-fetch').then(({default : fetch}) => fetch(...args));
+    const dotenv = require('dotenv');
 
-const CLIENT_ID = "c1c15041b40cebc5271e";
-const CLIENT_SECRET = "cf9f755f052284e2c5c6d65227932ca20ff7f3bd";
-
+    dotenv.config(); // Load environment variables from .env file
+    
+    const CLIENT_ID = "c1c15041b40cebc5271e";
+    const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
