@@ -21,14 +21,14 @@ function App() {
             console.log(data);
             if(data.access_token){
               localStorage.setItem("accessToken",data.access_token);
-              setRerender(!rerender);
+              setRerender((prevRerender) => !prevRerender);
             }
         });
         }
         getaccessToken();
       }
 
-      },[] )
+      },[setRerender] )
 
       async function getUserData(){
         await fetch("http://localhost:4000/getUserData" , {
